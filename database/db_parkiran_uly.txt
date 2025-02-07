@@ -1,0 +1,249 @@
+CREATE DATABASE db_parkiran_uly 
+
+ -pembuatan table kendraan
+CREATE TABLE kendaraan 
+(no_plat varchar (45) PRIMARY KEY,
+ id_tempat int,
+waktu_masuk varchar (45),
+jenis_kendaraan varchar(45),
+nama_pemilik varchar (45),
+waktu_keluar varchar (45));
+
+-pembuatan table kendaraan
+CREATE TABLE tempat_parkir 
+(id_tempat int PRIMARY KEY,
+ nama_tempat varchar (45),
+harga varchar (45),
+lokasi varchar (45));
+
+-isi kendaraan
+INSERT INTO kendaraan VALUES
+("D","233","09.00","motor","noel","12.00"),
+("E","244","09.00","mobil","jaemin","13.00"),
+("C","255","09.00","mobil","jeno","14.00"),
+("K","266","08.00","motor","uly","10.00"),
+("M","233","10.00","mobil","chenzyun","17.30");
+
+-isi tempat parkir
+INSERT INTO tempat_parkir VALUES
+("444","miko","20","lantai 1"),
+("455","miko","10","lantai 2"),
+("466","miko","15","lantai 3"),
+("477","miko","10","lantai 4"),
+("488","miko","30","lantai 5");
+
+-menyambungkan
+ALTER TABLE kendaraan ADD FOREIGN KEY (id_tempat) REFERENCES tempat_parkir (id_tempat)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+
+-coding index kendaraan
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kendaraan</title>
+</head>
+<body>
+    <h1>data kendaraan baru</h1>
+    <table border="1">
+        <a href="tambah.php">Kendaraan baru</a>
+        <tr>
+            <th>No.</th>
+            <th>no_plat</th>
+            <th>id_tempat</th>
+            <th>waktu_masuk</th>
+            <th>jenis_kendaraan</th>
+            <th>nama_pemilik</th>
+            <th>waktu_keluar</th>
+            <th>Aksi</th>
+        </tr>
+        <?php
+         include '../../config/koneksi.php';
+         $query = mysqli_query($conn, "SELECT * FROM kendaraan");
+         $no=1;
+         if(mysqli_num_rows($query)){
+            echo "data ada";
+            while($result=mysqli_fetch_assoc($query)){
+                ?>
+                <tr>
+                    <td><?php echo $no ?></td>
+                    <td><?php echo $result['no_plat']?></td>
+                    <td><?php echo $result['id_tempat'] ?></td>
+                    <td><?php echo $result['waktu_masuk'] ?></td>
+                    <td><?php echo $result['jenis_kendaraan'] ?></td>
+                    <td><?php echo $result['nama_pemilik'] ?></td>
+                    <td><?php echo $result['waktu_keluar'] ?></td>
+                    <td>
+                        <a href="">edit |</a>
+                        <a href="">hapus</a>
+                    </td>
+                </tr>
+                <?php
+                $no++;
+            }
+            }else{
+                echo "data kosong";
+         }
+         ?>
+    </table>
+</body>
+</html>
+
+-simpan
+<?php
+
+$no_plat = $_POST['no_plat'];
+$id_tempat = $_POST['id_tempat'];
+$waktu_masuk = $_POST['waktu_masuk'];
+$jenis_kendaraan = $_POST['jenis_kendraan'];
+$nama_pemilik = $_POST['nama_pemilik'];
+$waktu_keluar = $_POST['waktu_keluar'];
+
+include '../../config/koneksi.php';
+
+$query = mysqli_query($conn,"INSERT INTO kendaraan
+VALUES ('$no_plat','$id_tempat','$waktu_masuk','$jenis_kendaraan','$nama_pemilik','$waktu_keluar')");
+
+if($query){
+    echo "<script>alert('tambah berhasil')</script>";
+    echo "<script>window.location.href='index.php'</script>";
+}else{
+    echo "<script>alert('tambah gagal')</script>";
+    echo "<script>window.location.href='tambah.php'</script>";
+}
+
+
+-tambah
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> tambah kendaraan baru</title>
+</head>
+<body>
+    <h1>tambah kendaraan baru </h1>
+    <form action="simpan.php" method="post">
+        <label for="">no_plat</label>
+        <input type="number" name="no_plat">
+        <br>
+        <label for="">id_tempat</label>
+        <input type="number" name="id_tempat">
+        <br>
+        <label for="">waktu_masuk</label>
+        <input type="number" name="waktu_masuk">
+        <br>
+        <label for="">jenis_kendaraan</label>
+        <input type="text" name="jenis_kendaraan">
+        <br>
+        <label for="">nama_pemilik</label>
+        <input type="text" name="nama_pemilik">
+        <br>
+        <label for="">waktu_keluar</label>
+        <input type="number" name="waktu_keluar">
+        <br>
+        <button type="submit">simpan</button>
+    </form>
+</body>
+</html>
+
+
+-tempat parkir index
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kendaraan</title>
+</head>
+<body>
+    <h1>data kendaraan baru</h1>
+    <table border="1">
+        <tr>
+            <th>id_tempat</th>
+            <th>nama_tempat</th>
+            <th>harga</th>
+            <th>lokasi</th>
+        </tr>
+        <?php
+         include '../../config/koneksi.php';
+         $query = mysqli_query($conn, "select * from kendaraan");
+         $no=1;
+         if(mysqli_num_rows($query)){
+            echo "data ada";
+            while($result=mysqli_fetch_assoc($query)){
+                ?>
+                <tr>
+                    <td><?php echo $no ?></td>
+                    <td><?php echo $result['id_tempat']?></td>
+                    <td><?php echo $result['nama_tempat'] ?></td>
+                    <td><?php echo $result['harga'] ?></td>
+                    <td><?php echo $result['lokasi'] ?></td>
+                    <td>
+                        <a href="">edit |</a>
+                        <a href="">hapus</a>
+                    </td>
+                </tr>
+                <?php
+                $no++;
+            }
+            }else{
+                echo "data kosong";
+         }
+         ?>
+    </table>
+</body>
+</html>
+
+
+-simpan 
+<?php
+
+$id_tempat = $_POST['id_tempat'];
+$nama_tempat = $_POST['nama_tempat'];
+$harga = $_POST['harga'];
+$lokasi = $_POST['lokasi'];
+
+include '../../config/koneksi.php';
+
+$query = mysqli_query($conn,"INSERT INTO kendaraan
+VALUES ('$id_tempat','$nama_tempat','$harga','$lokasi')");
+
+if($query){
+    echo "<script>alert('tambah berhasil')</script>";
+    echo "<script>window.location.href='index.php'</script>";
+}else{
+    echo "<script>alert('tambah gagal')</script>";
+    echo "<script>window.location.href='tambah.php'</script>";
+}
+
+
+-tambah
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> tambah kendaraan baru</title>
+</head>
+<body>
+    <h1>tambah kendaraan baru </h1>
+    <form action="simpan.php" method="post">
+        <label for="">id_tempat</label>
+        <input type="number" name="id_tempat">
+        <br>
+        <label for="">nama_tempat</label>
+        <input type="number" name="nama_tempat">
+        <br>
+        <label for="">harga</label>
+        <input type="number" name="waktu_masuk">
+        <br>
+        <label for="">lokasi</label>
+        <input type="text" name="jenis_kendaraan">
+        <br>
+        <button type="submit">simpan</button>
+    </form>
+</body>
+</html>
